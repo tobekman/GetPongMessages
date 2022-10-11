@@ -1,0 +1,17 @@
+{
+  "name": "getpong_notifications",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "author": "GetPongLiaTeam",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "body-parser": "^1.20.1",
+    "express": "^4.18.2",
+    "firebase-admin": "^11.1.0"
+  }
+}
