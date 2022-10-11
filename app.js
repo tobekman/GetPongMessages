@@ -1,6 +1,5 @@
 const express = require('express')
 const admin = require('firebase-admin')
-const bodyParser = require('body-parser')
 const serviceAccount = require('./getpong-68dfd-firebase-adminsdk-9ovm9-d48c043e57.json')
 const app = express()
 const topic = 'getpong'
@@ -12,61 +11,48 @@ admin.initializeApp({
     databaseURL: 'https://getpong-68dfd.firebaseio.com',
 })
 
-// support parsing of application/json type post data
-app.use(bodyParser.json())
-//support parsing of application/x-www-form-urlencoded post data
-app.use(bodyParser.urlencoded({ extended: true }))
-
-//With json in body
-app.post('/score', (req, res) => {
-    let data = req.body
-    let message = createScoreMessage(data.setId, data.team, data.type)
-    sendMessage(message)
-    res.send(data)
-})
-app.post('/game', (req, res) => {
-    let data = req.body
-    let message = createGameMessage(data.gameEvent)
-    sendMessage(message)
-    res.send(data)
-})
-
-//With query param
-app.post('/score/hometeam/add', (req, res) => {
+app.get('/score/hometeam/add', (req, res) => {
     let message = createScoreMessage(currentSetId.toString(), 'homeTeam', 'add')
     sendMessage(message)
     res.send('Point added to home team')
 })
-app.post('/score/hometeam/remove', (req, res) => {
-    let message = createScoreMessage(currentSetId.toString(), 'homeTeam', 'remove')
+app.get('/score/hometeam/remove', (req, res) => {
+    let message = createScoreMessage(
+        currentSetId.toString(),
+        'homeTeam',
+        'remove'
+    )
     sendMessage(message)
     res.send('Point removed from home team')
 })
-app.post('/score/awayteam/add', (req, res) => {
+app.get('/score/awayteam/add', (req, res) => {
     let message = createScoreMessage(currentSetId.toString(), 'awayTeam', 'add')
     sendMessage(message)
     res.send('Point added to away team')
 })
-app.post('/score/awayteam/remove', (req, res) => {
-    let message = createScoreMessage(currentSetId.toString(), 'awayTeam', 'remove')
+app.get('/score/awayteam/remove', (req, res) => {
+    let message = createScoreMessage(
+        currentSetId.toString(),
+        'awayTeam',
+        'remove'
+    )
     sendMessage(message)
     res.send('Point removed from away team')
 })
 
-//Post with no data
-app.post('/game/add-set', (req, res) => {
+app.get('/game/add-set', (req, res) => {
     let message = createGameMessage('add')
     sendMessage(message)
     currentSetId++
     res.send('Set added')
 })
-app.post('/game/remove-set', (req, res) => {
+app.get('/game/remove-set', (req, res) => {
     let message = createGameMessage('remove')
     sendMessage(message)
     currentSetId--
     res.send('Set removed')
 })
-app.post('/game/save', (req, res) => {
+app.get('/game/save', (req, res) => {
     let message = createGameMessage('save')
     sendMessage(message)
     currentSetId = 0
