@@ -5,6 +5,8 @@ const serviceAccount = require('./getpong-68dfd-firebase-adminsdk-9ovm9-d48c043e
 const app = express()
 const topic = 'getpong'
 
+let currentSetId = 0
+
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
     databaseURL: 'https://getpong-68dfd.firebaseio.com',
@@ -31,22 +33,22 @@ app.post('/game', (req, res) => {
 
 //With query param
 app.post('/score/hometeam/add', (req, res) => {
-    let message = createScoreMessage(req.query.setId, 'homeTeam', 'add')
+    let message = createScoreMessage(currentSetId.toString(), 'homeTeam', 'add')
     sendMessage(message)
     res.send('Point added to home team')
 })
 app.post('/score/hometeam/remove', (req, res) => {
-    let message = createScoreMessage(req.query.setId, 'homeTeam', 'remove')
+    let message = createScoreMessage(currentSetId.toString(), 'homeTeam', 'remove')
     sendMessage(message)
     res.send('Point removed from home team')
 })
 app.post('/score/awayteam/add', (req, res) => {
-    let message = createScoreMessage(req.query.setId, 'awayTeam', 'add')
+    let message = createScoreMessage(currentSetId.toString(), 'awayTeam', 'add')
     sendMessage(message)
     res.send('Point added to away team')
 })
 app.post('/score/awayteam/remove', (req, res) => {
-    let message = createScoreMessage(req.query.setId, 'awayTeam', 'remove')
+    let message = createScoreMessage(currentSetId.toString(), 'awayTeam', 'remove')
     sendMessage(message)
     res.send('Point removed from away team')
 })
@@ -55,20 +57,21 @@ app.post('/score/awayteam/remove', (req, res) => {
 app.post('/game/add-set', (req, res) => {
     let message = createGameMessage('add')
     sendMessage(message)
+    currentSetId++
     res.send('Set added')
 })
 app.post('/game/remove-set', (req, res) => {
     let message = createGameMessage('remove')
     sendMessage(message)
+    currentSetId--
     res.send('Set removed')
 })
 app.post('/game/save', (req, res) => {
     let message = createGameMessage('save')
     sendMessage(message)
+    currentSetId = 0
     res.send('Game saved')
 })
-
-
 
 function createScoreMessage(setId, team, type) {
     return {
